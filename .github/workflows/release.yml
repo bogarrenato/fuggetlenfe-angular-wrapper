@@ -1,0 +1,152 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to release (example: 0.2.0)
+        required: true
+        type: string
+      components_version:
+        description: Published @fuggetlenfe/components version required by this release
+        required: true
+        type: string
+      tokens_version:
+        description: Published @fuggetlenfe/tokens and @fuggetlenfe/brand-styles version required by the demo app
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ inputs.version }}
+      COMPONENTS_VERSION: ${{ inputs.components_version }}
+      TOKENS_VERSION: ${{ inputs.tokens_version }}
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Configure git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Apply release version
+        run: |
+          npm version "$VERSION" --no-git-tag-version
+          npm pkg set dependencies.@fuggetlenfe/components="^$COMPONENTS_VERSION"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build wrapper
+        run: npm run build
+
+      - name: Collect documented versions
+        id: versions
+        run: |
+          TAG_VERSIONS="$(git tag --list 'v*' | sed 's/^v//' | paste -sd, -)"
+          if [ -n "$TAG_VERSIONS" ]; then
+            echo "docs_versions=$TAG_VERSIONS,$VERSION" >> "$GITHUB_OUTPUT"
+          else
+            echo "docs_versions=$VERSION" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build docs site
+        env:
+          DOCS_BASE_PATH: /${{ github.event.repository.name }}
+          DOCS_REPO_NAME: ${{ github.event.repository.name }}
+          DOCS_VERSIONS: ${{ steps.versions.outputs.docs_versions }}
+        run: npm run build:docs-site
+
+      - name: Validate publish artifact
+        run: npm run pack:check
+
+      - name: Commit version bump
+        run: |
+          git add package.json
+          if [ -f package-lock.json ]; then
+            git add package-lock.json
+          fi
+          git commit -m "release: v$VERSION"
+          git tag "v$VERSION"
+
+      - name: Publish package
+        run: npm publish --access public --provenance
+
+      - name: Push release commit and tag
+        run: git push origin main --follow-tags
+
+      - name: Wait for npm package availability
+        run: |
+          for PACKAGE in "@fuggetlenfe/angular-wrapper@$VERSION" "@fuggetlenfe/components@$COMPONENTS_VERSION" "@fuggetlenfe/tokens@$TOKENS_VERSION" "@fuggetlenfe/brand-styles@$TOKENS_VERSION"; do
+            echo "Waiting for $PACKAGE to become available on npm..."
+            for ATTEMPT in 1 2 3 4 5 6 7 8 9 10; do
+              if npm view "$PACKAGE" version >/dev/null 2>&1; then
+                echo "$PACKAGE is available."
+                break
+              fi
+
+              if [ "$ATTEMPT" -eq 10 ]; then
+                echo "Timed out waiting for $PACKAGE"
+                exit 1
+              fi
+
+              sleep 15
+            done
+          done
+
+      - name: Install demo dependencies from npm
+        working-directory: demo
+        run: |
+          npm pkg set dependencies.@fuggetlenfe/angular-wrapper="$VERSION"
+          npm pkg set dependencies.@fuggetlenfe/tokens="$TOKENS_VERSION"
+          npm pkg set dependencies.@fuggetlenfe/brand-styles="$TOKENS_VERSION"
+          npm install
+
+      - name: Build demo for latest docs
+        working-directory: demo
+        env:
+          SSR_BRAND: brand-1
+          SSR_THEME: light
+          SSR_OUTPUT_DIR: dist/latest/browser
+        run: |
+          npx ng build --configuration production --base-href "/${{ github.event.repository.name }}/latest/demo/" --output-path dist/latest
+          node scripts/prerender.mjs
+          mkdir -p ../site/latest/demo
+          cp -R dist/latest/browser/. ../site/latest/demo/
+
+      - name: Build demo for versioned docs
+        working-directory: demo
+        env:
+          SSR_BRAND: brand-1
+          SSR_THEME: light
+          SSR_OUTPUT_DIR: dist/versioned/browser
+        run: |
+          rm -rf dist/versioned
+          npx ng build --configuration production --base-href "/${{ github.event.repository.name }}/v${{ inputs.version }}/demo/" --output-path dist/versioned
+          node scripts/prerender.mjs
+          mkdir -p ../site/v${VERSION}/demo
+          cp -R dist/versioned/browser/. ../site/v${VERSION}/demo/
+
+      - name: Deploy docs
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./site
+          keep_files: true

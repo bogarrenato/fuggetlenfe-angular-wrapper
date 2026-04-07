@@ -1,0 +1,132 @@
+<!-- data-brand and data-theme on the shell element activate the brand pack CSS.
+     The brand pack overrides --ff-button-* variables via [data-brand][data-theme] selectors.
+     Every <ff-button> inside this shell inherits the Brand 1 visual identity automatically.
+     Theme switching is driven by Angular signals — no component logic change needed. -->
+<main class="consumer-shell" data-brand="brand-1" [attr.data-theme]="activeTheme()">
+  <section class="hero-card">
+    <p class="eyebrow">Angular app · external CSS brand pack</p>
+    <h1>Angular consumes only wrapper logic, then Brand 1 arrives from CSS.</h1>
+    <p class="body-copy">
+      This application imports the Angular wrapper plus the Brand 1 light and dark packs. The
+      component library itself stays visually neutral until the external stylesheet is present.
+    </p>
+
+    <div class="theme-bar" role="group" aria-label="Theme switcher">
+      <p class="theme-label">Theme pack</p>
+      <div class="theme-actions">
+        @for (themeOption of themeOptions; track themeOption.value) {
+          <button
+            type="button"
+            class="theme-button"
+            [attr.data-selected]="activeTheme() === themeOption.value"
+            (click)="setTheme(themeOption.value)"
+          >
+            {{ themeOption.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="button-row">
+      <ff-button class="brand-host">Brand 1 default</ff-button>
+      <ff-button class="pill-host">Class-based override</ff-button>
+      <ff-button
+        [style.--ff-button-padding-inline]="inlineTokenStyle.paddingInline"
+        [style.--ff-button-padding-block]="inlineTokenStyle.paddingBlock"
+        [style.--ff-button-radius]="inlineTokenStyle.radius"
+      >
+        Inline token tweak
+      </ff-button>
+    </div>
+  </section>
+
+  <section class="variants-section">
+    <p class="eyebrow">All variants</p>
+    <h2 class="section-title">Component API</h2>
+    <div class="variants-grid">
+      <div class="variant-item">
+        <ff-button>Default</ff-button>
+        <span class="variant-label">Default button</span>
+      </div>
+      <div class="variant-item">
+        <ff-button disabled>Disabled</ff-button>
+        <span class="variant-label">Disabled state</span>
+      </div>
+      <div class="variant-item">
+        <ff-button full-width>Full width</ff-button>
+        <span class="variant-label">Full-width layout</span>
+      </div>
+      <div class="variant-item">
+        <ff-button type="submit">Submit</ff-button>
+        <span class="variant-label">Type: submit</span>
+      </div>
+      <div class="variant-item">
+        <ff-button type="reset">Reset</ff-button>
+        <span class="variant-label">Type: reset</span>
+      </div>
+      <div class="variant-item">
+        <ff-button class="pill-host">Pill shape</ff-button>
+        <span class="variant-label">Class override (border-radius: 999px)</span>
+      </div>
+      <div class="variant-item">
+        <ff-button
+          [style.--ff-button-padding-inline]="inlineTokenStyle.paddingInline"
+          [style.--ff-button-padding-block]="inlineTokenStyle.paddingBlock"
+          [style.--ff-button-radius]="inlineTokenStyle.radius"
+        >
+          Custom tokens
+        </ff-button>
+        <span class="variant-label">Inline token override</span>
+      </div>
+      <div class="variant-item">
+        <ff-button>&rarr; Next</ff-button>
+        <span class="variant-label">Slotted icon text</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="info-grid">
+    <article class="info-card">
+      <p class="eyebrow">Consumer imports</p>
+      <div class="detail-block" aria-label="Consumer imports">
+        <div class="detail-line">Import the Angular wrapper package.</div>
+        <div class="detail-line">Import the shared token contract.</div>
+        <div class="detail-line">Import the Brand 1 light stylesheet.</div>
+        <div class="detail-line">Import the Brand 1 dark stylesheet.</div>
+        <div class="detail-line detail-line--gap">
+          Set data-brand="brand-1" and the active theme on the outer shell.
+        </div>
+        <div class="detail-line">Render the same ff-button logic inside that shell.</div>
+      </div>
+    </article>
+
+    <article class="info-card">
+      <p class="eyebrow">Theme behavior</p>
+      <div class="detail-block" aria-label="Theme behavior">
+        <div class="detail-line">The shell flips between light and dark.</div>
+        <div class="detail-line">The button keeps the same logic API in both modes.</div>
+        <div class="detail-line">Brand 1 colors come entirely from the imported CSS pack.</div>
+        <div class="detail-line">The current PoC deliberately ships only the primitive represented in Figma: the button.</div>
+      </div>
+    </article>
+
+    <article class="info-card">
+      <p class="eyebrow">What proves the separation</p>
+      <div class="proof-list">
+        <div class="proof-item">The Angular wrapper provides framework integration only.</div>
+        <div class="proof-item">
+          The imported CSS library gives the primitives their brand and surface tokens.
+        </div>
+        <div class="proof-item">
+          The same wrapper logic swaps between light and dark with CSS alone.
+        </div>
+        <div class="proof-item">
+          Host classes and per-instance CSS properties still tailor the component locally.
+        </div>
+        <div class="proof-item">
+          Removing a non-Figma primitive leaves the Angular bridge untouched for the shipped button.
+        </div>
+      </div>
+    </article>
+  </section>
+</main>

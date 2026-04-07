@@ -1,21 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ES2022",
-    "moduleResolution": "Bundler",
-    "strict": true,
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "useDefineForClassFields": false,
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "declaration": true,
     "declarationMap": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "lib": ["DOM", "ES2022"],
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "skipLibCheck": true,
+    "target": "ES2022",
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "compilationMode": "partial",
@@ -24,5 +20,8 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "files": ["src/index.ts", "src/server.ts"]
+  "files": [
+    "src/index.ts",
+    "src/server.ts"
+  ]
 }

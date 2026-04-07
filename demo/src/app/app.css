@@ -1,0 +1,205 @@
+:host {
+  display: block;
+}
+
+.consumer-shell {
+  min-height: 100vh;
+  padding: 2rem;
+  color: var(--ff-color-text-primary);
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--ff-button-bg-default) 20%, transparent) 0, transparent 28%),
+    linear-gradient(180deg, color-mix(in srgb, var(--ff-color-canvas) 94%, #08061f 6%), var(--ff-color-canvas));
+}
+
+.hero-card,
+.info-card {
+  width: min(980px, 100%);
+  margin: 0 auto;
+  border: 1px solid var(--ff-color-border-subtle);
+  background: color-mix(in srgb, var(--ff-color-surface) 92%, transparent);
+  box-shadow: 0 24px 90px color-mix(in srgb, var(--ff-button-bg-default) 10%, transparent);
+}
+
+.hero-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.hero-card h1,
+.eyebrow,
+.body-copy,
+.detail-block,
+.proof-list {
+  margin: 0;
+}
+
+.hero-card h1 {
+  font-family: var(--ff-font-family-brand);
+  font-size: clamp(2.3rem, 6vw, 4.4rem);
+  line-height: 0.96;
+  max-width: 12ch;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  color: var(--ff-color-text-muted);
+}
+
+.body-copy {
+  max-width: 62ch;
+  line-height: 1.7;
+  color: var(--ff-color-text-secondary);
+}
+
+.button-row,
+.info-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.theme-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--ff-color-border-subtle);
+  background: color-mix(in srgb, var(--ff-color-surface) 86%, transparent);
+}
+
+.theme-label {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ff-color-text-secondary);
+}
+
+.theme-actions {
+  display: inline-flex;
+  gap: 0.5rem;
+}
+
+.theme-button {
+  border: 1px solid var(--ff-color-border-subtle);
+  background: transparent;
+  color: var(--ff-color-text-primary);
+  padding: 0.65rem 0.95rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.theme-button[data-selected='true'] {
+  background: var(--ff-button-bg-default);
+  color: var(--ff-button-fg-default);
+  border-color: transparent;
+}
+
+.button-row {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.info-grid {
+  width: min(980px, 100%);
+  margin: 1rem auto 0;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.info-card {
+  padding: 1.2rem;
+}
+
+.detail-block {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem;
+  border: 1px solid var(--ff-color-border-subtle);
+  background: color-mix(in srgb, var(--ff-color-canvas) 88%, transparent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  line-height: 1.6;
+}
+
+.detail-line--gap {
+  margin-top: 0.5rem;
+}
+
+.proof-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.proof-item {
+  color: var(--ff-color-text-secondary);
+}
+
+.brand-host::part(button) {
+  box-shadow: 0 18px 36px color-mix(in srgb, var(--ff-button-bg-default) 20%, transparent);
+}
+
+.pill-host {
+  --ff-button-radius: 999px;
+  --ff-button-padding-inline: 1.35rem;
+}
+
+.pill-host::part(button) {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.variants-section {
+  width: min(980px, 100%);
+  margin: 1rem auto 0;
+  border: 1px solid var(--ff-color-border-subtle);
+  background: color-mix(in srgb, var(--ff-color-surface) 92%, transparent);
+  padding: 1.5rem;
+}
+
+.section-title {
+  margin: 0.5rem 0 0;
+  font-family: var(--ff-font-family-brand);
+  font-size: 1.5rem;
+}
+
+.variants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.variant-item {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.variant-label {
+  font-size: 0.78rem;
+  color: var(--ff-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 640px) {
+  .consumer-shell {
+    padding: 1rem;
+  }
+
+  .hero-card,
+  .info-card {
+    padding: 1rem;
+  }
+
+  .theme-bar {
+    align-items: stretch;
+  }
+
+  .theme-actions {
+    width: 100%;
+  }
+
+  .theme-button {
+    flex: 1;
+  }
+}

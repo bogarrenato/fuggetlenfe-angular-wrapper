@@ -1,3 +1,6 @@
 node_modules/
 dist/
-.DS_Store
+site/
+demo/node_modules/
+demo/dist/
+demo/.angular/

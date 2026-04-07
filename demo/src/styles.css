@@ -1,0 +1,33 @@
+/*
+  Token and brand CSS imports — this is where the visual identity enters the Angular app.
+
+  1. contract.css: Defines the stable --ff-button-* and --ff-color-* CSS custom properties
+     with safe fallback values. This is the public API between design and components.
+
+  2. Brand pack CSS: Overrides the contract variables with Brand 1 specific values.
+     These files use [data-brand='brand-1'][data-theme='light'|'dark'] attribute selectors.
+     When the app shell (app.html) sets data-brand="brand-1" and [attr.data-theme]="activeTheme()",
+     the CSS cascade activates the Brand 1 light or dark overrides automatically.
+
+  The FfButton directive (imported in app.ts from @fuggetlenfe/angular-wrapper) proxies
+  Angular template bindings to the underlying Stencil web component. The web component's
+  shadow DOM CSS reads the --ff-button-* variables defined here.
+  No brand logic exists in the directive or the web component.
+*/
+@import '@fuggetlenfe/tokens/contract.css';
+@import '@fuggetlenfe/brand-styles/brand-1-light.css';
+@import '@fuggetlenfe/brand-styles/brand-1-dark.css';
+
+html {
+  background: #0f1322;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: Inter, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
