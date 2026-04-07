@@ -1,0 +1,1066 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Angular Wrapper Documentation</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --canvas: #f8f5f1;
+        --surface: rgba(255, 255, 255, 0.92);
+        --surface-strong: #ffffff;
+        --surface-soft: #fff1e7;
+        --border: #e2d8cd;
+        --text: #241913;
+        --text-soft: #6d584c;
+        --accent: #de6b24;
+        --accent-strong: #9b4210;
+        --accent-soft: rgba(222, 107, 36, 0.14);
+        --shadow: 0 24px 64px rgba(36, 25, 19, 0.09);
+        --radius-lg: 28px;
+        --radius-md: 18px;
+        --radius-sm: 12px;
+        --font-body: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+        --font-heading: "Space Grotesk", "Segoe UI", Arial, sans-serif;
+        --font-code: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background:
+          radial-gradient(circle at top left, rgba(222, 107, 36, 0.18), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(95, 58, 31, 0.08), transparent 35%),
+          var(--canvas);
+        color: var(--text);
+        font-family: var(--font-body);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .layout {
+        width: min(1360px, calc(100vw - 2rem));
+        margin: 0 auto;
+        padding: 1.25rem 0 3rem;
+        display: grid;
+        grid-template-columns: 300px minmax(0, 1fr);
+        gap: 1.25rem;
+      }
+
+      .sidebar,
+      .panel,
+      .hero,
+      .component-card,
+      .callout,
+      .link-card {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        backdrop-filter: blur(12px);
+        box-shadow: var(--shadow);
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 1rem;
+        align-self: start;
+        border-radius: var(--radius-lg);
+        padding: 1.4rem;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.4rem 0.7rem;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .brand-dot {
+        width: 0.7rem;
+        height: 0.7rem;
+        border-radius: 999px;
+        background: var(--accent);
+      }
+
+      .sidebar h1 {
+        margin: 1rem 0 0.5rem;
+        font-family: var(--font-heading);
+        font-size: 2.3rem;
+        line-height: 0.92;
+      }
+
+      .sidebar p {
+        margin: 0;
+        color: var(--text-soft);
+        line-height: 1.65;
+      }
+
+      .sidebar nav {
+        display: grid;
+        gap: 0.45rem;
+        margin-top: 1.4rem;
+      }
+
+      .sidebar nav a {
+        padding: 0.8rem 0.95rem;
+        border-radius: var(--radius-sm);
+        background: rgba(255, 255, 255, 0.75);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .sidebar nav a:hover {
+        background: var(--accent-soft);
+      }
+
+      .sidebar nav .nav-group-label {
+        margin-top: 0.6rem;
+        padding: 0.3rem 0.95rem 0.15rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      .content {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .hero {
+        border-radius: var(--radius-lg);
+        padding: 1.55rem;
+      }
+
+      .eyebrow {
+        margin: 0 0 0.65rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent-strong);
+      }
+
+      .hero h2 {
+        margin: 0;
+        font-family: var(--font-heading);
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        line-height: 0.95;
+        max-width: 11ch;
+      }
+
+      .hero-copy {
+        margin-top: 1rem;
+        max-width: 70ch;
+        color: var(--text-soft);
+        line-height: 1.8;
+      }
+
+      .link-grid,
+      .stats-grid,
+      .component-grid {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .link-grid,
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .link-card,
+      .panel,
+      .component-card,
+      .callout {
+        border-radius: var(--radius-md);
+        padding: 1.1rem 1.15rem;
+      }
+
+      .link-card {
+        text-decoration: none;
+      }
+
+      .link-card strong,
+      .stat-value {
+        display: block;
+        font-family: var(--font-heading);
+        font-size: 1.15rem;
+      }
+
+      .link-card span,
+      .stat-copy,
+      .panel p,
+      .component-card p,
+      .callout p {
+        color: var(--text-soft);
+        line-height: 1.7;
+      }
+
+      .panel h3,
+      .component-card h3,
+      .callout h3 {
+        margin: 0 0 0.6rem;
+        font-family: var(--font-heading);
+        font-size: 1.45rem;
+      }
+
+      .section-heading {
+        margin: 0 0 0.75rem;
+        font-family: var(--font-heading);
+        font-size: 1.9rem;
+      }
+
+      .sub-heading {
+        margin: 1.25rem 0 0.5rem;
+        font-family: var(--font-heading);
+        font-size: 1.3rem;
+      }
+
+      .section-copy {
+        margin: 0 0 1rem;
+        max-width: 76ch;
+        color: var(--text-soft);
+        line-height: 1.8;
+      }
+
+      .component-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      }
+
+      .component-card {
+        display: grid;
+        gap: 0.95rem;
+      }
+
+      .component-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+      }
+
+      .meta-pill {
+        padding: 0.35rem 0.65rem;
+        border-radius: 999px;
+        background: var(--surface-soft);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-strong);
+      }
+
+      .code-block,
+      table {
+        width: 100%;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: #16161c;
+        overflow: hidden;
+      }
+
+      .code-block {
+        padding: 0.95rem 1rem;
+        color: #f7f3ee;
+        font-family: var(--font-code);
+        font-size: 0.88rem;
+        line-height: 1.7;
+        white-space: pre-wrap;
+      }
+
+      .code-label {
+        display: block;
+        margin-bottom: 0.45rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      table {
+        border-collapse: collapse;
+        background: var(--surface-strong);
+      }
+
+      th,
+      td {
+        padding: 0.85rem 0.9rem;
+        border-bottom: 1px solid var(--border);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        font-size: 0.78rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-soft);
+      }
+
+      td {
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      code {
+        font-family: var(--font-code);
+      }
+
+      .callout {
+        background: linear-gradient(135deg, rgba(222, 107, 36, 0.14), rgba(255, 255, 255, 0.95));
+      }
+
+      .list {
+        display: grid;
+        gap: 0.55rem;
+      }
+
+      .list-item {
+        padding-left: 1rem;
+        position: relative;
+        color: var(--text-soft);
+        line-height: 1.7;
+      }
+
+      .list-item::before {
+        content: "";
+        width: 0.42rem;
+        height: 0.42rem;
+        border-radius: 999px;
+        background: var(--accent);
+        position: absolute;
+        left: 0;
+        top: 0.72rem;
+      }
+
+      .diagram-block {
+        width: 100%;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--surface-strong);
+        padding: 1.2rem 1rem;
+        font-family: var(--font-code);
+        font-size: 0.82rem;
+        line-height: 2;
+        white-space: pre;
+        overflow-x: auto;
+        color: var(--text);
+      }
+
+      .diagram-block .dim {
+        color: var(--text-soft);
+      }
+
+      .diagram-block .hl {
+        color: var(--accent-strong);
+        font-weight: 700;
+      }
+
+      @media (max-width: 1024px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: static;
+          max-height: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-dot"></span>Angular Wrapper</div>
+        <h1>Standalone Angular integration for the shared primitive layer.</h1>
+        <p>
+          The Angular wrapper keeps product teams inside a familiar Angular template model while the
+          shared Web Component core continues to own behavior, accessibility, and public runtime
+          semantics.
+        </p>
+        <nav aria-label="Angular wrapper documentation navigation">
+          <a href="#overview">Overview</a>
+          <a href="#getting-started">Getting started</a>
+          <a href="#architecture">Architecture</a>
+
+          <span class="nav-group-label">Component API</span>
+          <a href="#components">Component reference</a>
+          <a href="#css-custom-properties">CSS custom properties</a>
+          <a href="#shadow-parts">CSS shadow parts</a>
+          <a href="#slots">Slots</a>
+          <a href="#examples">Code examples</a>
+
+          <span class="nav-group-label">Design tokens</span>
+          <a href="#theming">Theming</a>
+          <a href="#token-architecture">Token architecture</a>
+
+          <span class="nav-group-label">Quality</span>
+          <a href="#accessibility">Accessibility</a>
+          <a href="#keyboard-nav">Keyboard navigation</a>
+          <a href="#aria">ARIA</a>
+          <a href="#release-model">Release model</a>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <section class="hero" id="overview">
+          <p class="eyebrow">UI kit reference</p>
+          <h2>Keep Angular ergonomics while sharing one logic-only component core.</h2>
+          <p class="hero-copy">
+            <code>@fuggetlenfe/angular-wrapper</code> exports standalone Angular-ready directives
+            that map to the shared Stencil primitives. The wrapper does not decide the active brand,
+            theme, or surface styling. Those remain in the consumer app shell and in the external
+            styling packages.
+          </p>
+        </section>
+
+        <section class="link-grid" aria-label="Wrapper links">
+          <a class="link-card" href="https://bogarrenato.github.io/fuggetlenfe-components/latest/storybook/">
+            <p class="eyebrow">Reference</p>
+            <strong>Stencil Storybook</strong>
+            <span>Published component stories and API docs for the shared Stencil primitive that this wrapper exposes.</span>
+          </a>
+          <a class="link-card" href="./demo/">
+            <p class="eyebrow">Published demo</p>
+            <strong>Angular wrapper app</strong>
+            <span>Demonstrates the npm-distributed Angular wrapper with the published token contract and brand pack.</span>
+          </a>
+          <a class="link-card" href="https://www.npmjs.com/package/@fuggetlenfe/angular-wrapper">
+            <p class="eyebrow">Package</p>
+            <strong>npm distribution</strong>
+            <span>Install the published wrapper from npm and compose it with tokens and official brand packs in Angular.</span>
+          </a>
+        </section>
+
+        <section class="stats-grid" aria-label="Wrapper facts">
+          <article class="panel">
+            <p class="eyebrow">Role</p>
+            <span class="stat-value">Angular bridge only</span>
+            <p class="stat-copy">The wrapper should stay as a standalone Angular integration layer.</p>
+          </article>
+          <article class="panel">
+            <p class="eyebrow">Current primitives</p>
+            <span class="stat-value">FfButton</span>
+            <p class="stat-copy">The current Figma-aligned PoC ships only the button primitive through the Angular adapter.</p>
+          </article>
+          <article class="panel">
+            <p class="eyebrow">Design model</p>
+            <span class="stat-value">External token contract</span>
+            <p class="stat-copy">Angular apps import the CSS contract and a brand pack at the shell level.</p>
+          </article>
+        </section>
+
+        <!-- Getting started -->
+        <section id="getting-started">
+          <h2 class="section-heading">Getting started</h2>
+          <p class="section-copy">
+            Angular consumers import the standalone wrapper exports into their component and pull the
+            shared token contract plus the selected brand stylesheets into the application styles.
+          </p>
+
+          <span class="code-label">1. Install packages</span>
+          <div class="code-block">npm install @fuggetlenfe/angular-wrapper @fuggetlenfe/tokens @fuggetlenfe/brand-styles</div>
+
+          <span class="code-label">2. Import the standalone directive</span>
+          <div class="code-block">import { Component } from '@angular/core';
+import { FfButton } from '@fuggetlenfe/angular-wrapper';
+
+@Component({
+  selector: 'app-root',
+  imports: [FfButton],
+  templateUrl: './app.html'
+})
+export class AppComponent {}</div>
+
+          <span class="code-label">3. Add token stylesheets to your global styles</span>
+          <div class="code-block">@import '@fuggetlenfe/tokens/contract.css';
+@import '@fuggetlenfe/brand-styles/brand-1-light.css';
+@import '@fuggetlenfe/brand-styles/brand-1-dark.css';</div>
+        </section>
+
+        <!-- Architecture -->
+        <section id="architecture">
+          <h2 class="section-heading">Architecture boundaries</h2>
+          <p class="section-copy">
+            The Angular wrapper exists so Angular teams can consume the shared primitive layer
+            through standalone imports and template bindings. It should not grow into a second
+            design system or a place for application-specific decisions.
+          </p>
+          <div class="callout">
+            <h3>What belongs here</h3>
+            <div class="list">
+              <div class="list-item">Standalone Angular exports generated from the shared Stencil core.</div>
+              <div class="list-item">Property and event bridge behavior for Angular templates.</div>
+              <div class="list-item">Typed integration surface for Angular product teams.</div>
+            </div>
+          </div>
+          <div class="callout">
+            <h3>What does not belong here</h3>
+            <div class="list">
+              <div class="list-item">Theme activation or brand ownership.</div>
+              <div class="list-item">Business workflows or page-level layout rules.</div>
+              <div class="list-item">Any hardcoded styling that should live in the brand library.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Component reference -->
+        <section id="components">
+          <h2 class="section-heading">Component reference</h2>
+          <p class="section-copy">
+            The Angular wrapper preserves the same public primitive API that exists in the Stencil
+            layer. The PoC is intentionally limited to the button because that is the primitive
+            currently represented in Figma and covered by the sync contract.
+          </p>
+
+          <div class="component-grid">
+            <article class="component-card">
+              <div>
+                <div class="component-meta">
+                  <span class="meta-pill">Primitive</span>
+                  <span class="meta-pill">Standalone import</span>
+                </div>
+                <h3>FfButton</h3>
+                <p>
+                  Shared action primitive for shell actions, content actions, and theme demonstrations.
+                  The Angular wrapper exposes it in a template-friendly form without injecting design logic.
+                </p>
+              </div>
+
+              <div class="code-block">&lt;main data-brand="brand-1" [attr.data-theme]="activeTheme()"&gt;
+  &lt;ff-button type="submit"&gt;Save changes&lt;/ff-button&gt;
+&lt;/main&gt;</div>
+
+              <table aria-label="FfButton properties API">
+                <thead>
+                  <tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>label</code></td>
+                    <td><code>string</code></td>
+                    <td><code>undefined</code></td>
+                    <td>Fallback label when no projected content is provided.</td>
+                  </tr>
+                  <tr>
+                    <td><code>disabled</code></td>
+                    <td><code>boolean</code></td>
+                    <td><code>false</code></td>
+                    <td>Disables pointer and keyboard interaction. Forwarded to the native button.</td>
+                  </tr>
+                  <tr>
+                    <td><code>fullWidth</code></td>
+                    <td><code>boolean</code></td>
+                    <td><code>false</code></td>
+                    <td>Expands the host to 100% inline size without coupling layout to a specific brand.</td>
+                  </tr>
+                  <tr>
+                    <td><code>type</code></td>
+                    <td><code>'button' | 'submit' | 'reset'</code></td>
+                    <td><code>'button'</code></td>
+                    <td>Mirrors the native button type attribute. Use <code>'submit'</code> inside forms.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </article>
+          </div>
+        </section>
+
+        <!-- CSS Custom Properties -->
+        <section id="css-custom-properties">
+          <h3 class="sub-heading">CSS custom properties</h3>
+          <p class="section-copy">
+            Every visual characteristic of <code>ff-button</code> is driven by CSS custom properties
+            defined in the shared token contract. Brand packs populate these tokens. Consumer
+            applications may override them at any specificity level.
+          </p>
+
+          <table aria-label="FfButton CSS custom properties">
+            <thead>
+              <tr><th>Token</th><th>Description</th><th>Default</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>--ff-button-bg-default</code></td>
+                <td>Background color in the default (rest) state.</td>
+                <td>From brand pack</td>
+              </tr>
+              <tr>
+                <td><code>--ff-button-fg-default</code></td>
+                <td>Foreground (text/icon) color in the default state.</td>
+                <td>From brand pack</td>
+              </tr>
+              <tr>
+                <td><code>--ff-button-bg-hover</code></td>
+                <td>Background color on hover.</td>
+                <td>From brand pack</td>
+              </tr>
+              <tr>
+                <td><code>--ff-button-fg-hover</code></td>
+                <td>Foreground color on hover.</td>
+                <td>From brand pack</td>
+              </tr>
+              <tr>
+                <td><code>--ff-button-bg-active</code></td>
+                <td>Background color on press (active).</td>
+                <td>From brand pack</td>
+              </tr>
+              <tr>
+                <td><code>--ff-button-fg-active</code></td>
+                <td>Foreground color on press (active).</td>
+                <td>From brand pack</td>
+              </tr>
+              <tr>
+                <td><code>--ff-button-bg-disabled</code></td>
+                <td>Background color when the button is disabled.</td>
+                <td>From brand pack</td>
+              </tr>
+              <tr>
+                <td><code>--ff-button-fg-disabled</code></td>
+                <td>Foreground color when the button is disabled.</td>
+                <td>From brand pack</td>
+              </tr>
+              <tr>
+                <td><code>--ff-button-radius</code></td>
+                <td>Border radius of the button surface.</td>
+                <td>From brand pack</td>
+              </tr>
+              <tr>
+                <td><code>--ff-button-padding-inline</code></td>
+                <td>Horizontal (inline-axis) padding.</td>
+                <td>From brand pack</td>
+              </tr>
+              <tr>
+                <td><code>--ff-button-padding-block</code></td>
+                <td>Vertical (block-axis) padding.</td>
+                <td>From brand pack</td>
+              </tr>
+              <tr>
+                <td><code>--ff-font-family-brand</code></td>
+                <td>Font family used for button label text.</td>
+                <td>From brand pack</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- CSS Shadow Parts -->
+        <section id="shadow-parts">
+          <h3 class="sub-heading">CSS shadow parts</h3>
+          <p class="section-copy">
+            The component exposes named shadow parts so that consumer stylesheets can target
+            internal elements through the <code>::part()</code> pseudo-element selector without
+            relying on implementation details.
+          </p>
+
+          <table aria-label="FfButton CSS shadow parts">
+            <thead>
+              <tr><th>Part</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>button</code></td>
+                <td>The native <code>&lt;button&gt;</code> element inside the shadow DOM. Accepts any CSS property including <code>font</code>, <code>padding</code>, <code>border</code>, and <code>transition</code> overrides.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <span class="code-label">Targeting a shadow part</span>
+          <div class="code-block">ff-button::part(button) {
+  transition: background-color 180ms ease, color 180ms ease;
+}</div>
+        </section>
+
+        <!-- Slots -->
+        <section id="slots">
+          <h3 class="sub-heading">Slots</h3>
+          <p class="section-copy">
+            Content projection uses the standard Web Component slot mechanism. The Angular template
+            projects child content into the default slot automatically.
+          </p>
+
+          <table aria-label="FfButton slots">
+            <thead>
+              <tr><th>Slot</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>(default)</td>
+                <td>Button content. Any inline or block-level HTML is accepted. Falls back to the <code>label</code> property value if the slot is empty.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <span class="code-label">Projected content example</span>
+          <div class="code-block">&lt;ff-button&gt;
+  &lt;svg aria-hidden="true" width="16" height="16"&gt;&lt;!-- icon --&gt;&lt;/svg&gt;
+  Save changes
+&lt;/ff-button&gt;</div>
+
+          <span class="code-label">Fallback label example</span>
+          <div class="code-block">&lt;ff-button label="Save changes"&gt;&lt;/ff-button&gt;</div>
+        </section>
+
+        <!-- Code examples -->
+        <section id="examples">
+          <h2 class="section-heading">Code examples</h2>
+          <p class="section-copy">
+            The following examples demonstrate common usage patterns for the button primitive
+            inside Angular templates. All examples assume the wrapper is imported as a standalone
+            directive and the token contract is loaded in global styles.
+          </p>
+
+          <span class="code-label">Disabled button</span>
+          <div class="code-block">&lt;ff-button [disabled]="isSaving()"&gt;Save changes&lt;/ff-button&gt;</div>
+
+          <span class="code-label">Full-width button</span>
+          <div class="code-block">&lt;ff-button [fullWidth]="true"&gt;Continue to checkout&lt;/ff-button&gt;</div>
+
+          <span class="code-label">Submit button inside a reactive form</span>
+          <div class="code-block">&lt;form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()"&gt;
+  &lt;!-- form controls --&gt;
+  &lt;ff-button type="submit" [disabled]="checkoutForm.invalid"&gt;
+    Place order
+  &lt;/ff-button&gt;
+&lt;/form&gt;</div>
+
+          <span class="code-label">Component class for the form example</span>
+          <div class="code-block">import { Component, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FfButton } from '@fuggetlenfe/angular-wrapper';
+
+@Component({
+  selector: 'app-checkout',
+  imports: [FfButton, ReactiveFormsModule],
+  templateUrl: './checkout.html'
+})
+export class CheckoutComponent {
+  private readonly fb = inject(FormBuilder);
+
+  readonly checkoutForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    name: ['', Validators.required]
+  });
+
+  onSubmit(): void {
+    if (this.checkoutForm.valid) {
+      console.log(this.checkoutForm.getRawValue());
+    }
+  }
+}</div>
+
+          <span class="code-label">Custom token override via inline style binding</span>
+          <div class="code-block">&lt;ff-button
+  [style.--ff-button-bg-default]="'#1a73e8'"
+  [style.--ff-button-fg-default]="'#ffffff'"
+  [style.--ff-button-radius]="'8px'"
+&gt;
+  Custom styled
+&lt;/ff-button&gt;</div>
+
+          <span class="code-label">Class-based override in component styles</span>
+          <div class="code-block">/* checkout.component.css */
+:host ff-button.danger {
+  --ff-button-bg-default: #d93025;
+  --ff-button-fg-default: #ffffff;
+  --ff-button-bg-hover: #c5221f;
+  --ff-button-fg-hover: #ffffff;
+}</div>
+          <div class="code-block">&lt;ff-button class="danger"&gt;Delete account&lt;/ff-button&gt;</div>
+
+          <span class="code-label">Multiple buttons in a row</span>
+          <div class="code-block">&lt;div style="display: flex; gap: 0.75rem; align-items: center"&gt;
+  &lt;ff-button type="submit"&gt;Confirm&lt;/ff-button&gt;
+  &lt;ff-button
+    [style.--ff-button-bg-default]="'transparent'"
+    [style.--ff-button-fg-default]="'var(--ff-button-bg-default)'"
+  &gt;
+    Cancel
+  &lt;/ff-button&gt;
+  &lt;ff-button [disabled]="true"&gt;Unavailable&lt;/ff-button&gt;
+&lt;/div&gt;</div>
+        </section>
+
+        <!-- Theming -->
+        <section id="theming">
+          <h2 class="section-heading">Theming and brand activation</h2>
+          <p class="section-copy">
+            Angular applications activate styling by importing the token contract and the official
+            brand pack, then setting the visual context on the outer shell with <code>data-brand</code>
+            and <code>data-theme</code>.
+          </p>
+
+          <span class="code-label">Brand and theme context on the shell</span>
+          <div class="code-block">&lt;main class="consumer-shell" data-brand="brand-1" [attr.data-theme]="activeTheme()"&gt;
+  &lt;ff-button&gt;Launch selected brand&lt;/ff-button&gt;
+&lt;/main&gt;</div>
+
+          <span class="code-label">Runtime theme switching with a signal</span>
+          <div class="code-block">import { Component, signal } from '@angular/core';
+import { FfButton } from '@fuggetlenfe/angular-wrapper';
+
+type Theme = 'light' | 'dark';
+
+@Component({
+  selector: 'app-shell',
+  imports: [FfButton],
+  templateUrl: './shell.html'
+})
+export class ShellComponent {
+  readonly activeTheme = signal&lt;Theme&gt;('light');
+
+  toggleTheme(): void {
+    this.activeTheme.update(
+      (current: Theme): Theme =&gt; current === 'light' ? 'dark' : 'light'
+    );
+  }
+}</div>
+
+          <div class="callout">
+            <h3>Supported override paths</h3>
+            <div class="list">
+              <div class="list-item">Application shell <code>data-brand</code> and <code>data-theme</code> context.</div>
+              <div class="list-item">Documented CSS custom properties from the shared token contract.</div>
+              <div class="list-item">Host classes passed from the Angular template.</div>
+              <div class="list-item">Shadow part selectors for deep structural overrides.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Token Architecture -->
+        <section id="token-architecture">
+          <h2 class="section-heading">Token architecture</h2>
+          <p class="section-copy">
+            The design system uses a three-layer token model that separates the design source of
+            truth (Figma) from the runtime contract consumed by components. Understanding this
+            pipeline is essential for teams who maintain brand packs or create custom themes.
+          </p>
+
+          <div class="callout">
+            <h3>The three-layer model</h3>
+            <div class="list">
+              <div class="list-item">
+                <strong>Layer 1 &mdash; contract.css</strong><br />
+                Declares every CSS custom property the component layer can reference. This file
+                contains no values, only empty variable declarations. It acts as the schema.
+              </div>
+              <div class="list-item">
+                <strong>Layer 2 &mdash; figma-preset.css</strong><br />
+                Generated by the Figma sync pipeline. Provides a default set of resolved token
+                values that match the current Figma component definitions exactly.
+              </div>
+              <div class="list-item">
+                <strong>Layer 3 &mdash; Brand pack</strong><br />
+                A scoped stylesheet keyed to <code>[data-brand]</code> and <code>[data-theme]</code>
+                selectors. Each brand pack overrides the contract variables for a specific visual identity.
+              </div>
+            </div>
+          </div>
+
+          <span class="code-label">Token resolution pipeline</span>
+          <div class="diagram-block"><span class="dim">Source</span>        <span class="dim">Sync</span>             <span class="dim">Contract</span>          <span class="dim">Brand</span>           <span class="dim">Component</span>
+
+<span class="hl">Figma</span>    ──&gt;   <span class="hl">figma-sync</span>   ──&gt;   <span class="hl">contract.css</span>   ──&gt;   <span class="hl">brand pack</span>   ──&gt;   <span class="hl">ff-button</span>
+<span class="dim">variables</span>      <span class="dim">CLI tool</span>          <span class="dim">empty decls</span>        <span class="dim">values by</span>        <span class="dim">reads vars</span>
+<span class="dim">& styles</span>       <span class="dim">extracts</span>          <span class="dim">define the</span>        <span class="dim">brand+theme</span>       <span class="dim">at runtime</span>
+               <span class="dim">tokens</span>            <span class="dim">public API</span>        <span class="dim">selector</span></div>
+
+          <span class="code-label">How data-brand and data-theme activate tokens</span>
+          <div class="code-block">/* contract.css - Layer 1: declares the schema */
+:root {
+  --ff-button-bg-default: ;
+  --ff-button-fg-default: ;
+  --ff-button-radius: ;
+}
+
+/* brand-1-light.css - Layer 3: populates values */
+[data-brand="brand-1"][data-theme="light"] {
+  --ff-button-bg-default: #de6b24;
+  --ff-button-fg-default: #ffffff;
+  --ff-button-radius: 12px;
+}
+
+/* brand-1-dark.css - Layer 3: different values, same contract */
+[data-brand="brand-1"][data-theme="dark"] {
+  --ff-button-bg-default: #f4a261;
+  --ff-button-fg-default: #1a1210;
+  --ff-button-radius: 12px;
+}</div>
+
+          <div class="callout">
+            <h3>Creating a custom brand pack</h3>
+            <p>
+              A custom brand pack is a CSS file that targets a unique <code>data-brand</code>
+              value and populates every token declared in <code>contract.css</code>. The component
+              layer does not need to change. Import the custom pack instead of the official one.
+            </p>
+            <div class="list">
+              <div class="list-item">Copy <code>contract.css</code> as your starting template.</div>
+              <div class="list-item">Replace each empty declaration with your brand values.</div>
+              <div class="list-item">Scope values under <code>[data-brand="your-brand"]</code> and <code>[data-theme]</code> selectors.</div>
+              <div class="list-item">Import the file at the application shell level alongside the contract.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Accessibility -->
+        <section id="accessibility">
+          <h2 class="section-heading">Accessibility expectations</h2>
+          <p class="section-copy">
+            Accessibility behavior belongs to the shared primitive layer, but the Angular wrapper must
+            preserve that contract through template bindings and event handling.
+          </p>
+          <table aria-label="Accessibility checklist">
+            <thead>
+              <tr><th>Area</th><th>Current expectation</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Keyboard support</td><td>Buttons keep native button semantics. Dropdown supports Arrow keys, Enter, Escape, and Tab.</td></tr>
+              <tr><td>ARIA model</td><td>Dropdown exposes a listbox pattern with proper selected and expanded state through the primitive.</td></tr>
+              <tr><td>Theme quality</td><td>Official brand packs are expected to meet WCAG AA contrast targets before release.</td></tr>
+              <tr><td>Focus indicator</td><td>Uses <code>:focus-visible</code> so focus rings appear only for keyboard navigation, not pointer clicks.</td></tr>
+              <tr><td>Color contrast</td><td>All foreground/background token pairs in official brand packs must maintain a minimum 4.5:1 contrast ratio for normal text.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Keyboard Navigation -->
+        <section id="keyboard-nav">
+          <h3 class="sub-heading">Keyboard navigation</h3>
+          <p class="section-copy">
+            The button primitive uses a native <code>&lt;button&gt;</code> element, which provides
+            built-in keyboard behavior. The following table documents the expected interactions.
+          </p>
+
+          <table aria-label="Keyboard navigation reference">
+            <thead>
+              <tr><th>Key</th><th>Behavior</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Enter</code></td>
+                <td>Activates the button. If the button has <code>type="submit"</code>, submits the enclosing form.</td>
+              </tr>
+              <tr>
+                <td><code>Space</code></td>
+                <td>Activates the button. The activation fires on key-up, matching native browser behavior.</td>
+              </tr>
+              <tr>
+                <td><code>Tab</code></td>
+                <td>Moves focus to the next focusable element in the document tab order.</td>
+              </tr>
+              <tr>
+                <td><code>Shift+Tab</code></td>
+                <td>Moves focus to the previous focusable element in the document tab order.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ARIA -->
+        <section id="aria">
+          <h3 class="sub-heading">ARIA</h3>
+          <p class="section-copy">
+            Because the component uses a native <code>&lt;button&gt;</code> element inside its
+            shadow DOM, most ARIA semantics are provided implicitly by the browser. Consumers
+            should not need to add ARIA attributes for standard button usage.
+          </p>
+
+          <div class="callout">
+            <h3>Implicit behavior</h3>
+            <div class="list">
+              <div class="list-item">The native <code>&lt;button&gt;</code> element carries an implicit <code>role="button"</code>. Do not add a redundant role attribute.</div>
+              <div class="list-item">The <code>disabled</code> property is forwarded to the native <code>disabled</code> attribute, which browsers expose as <code>aria-disabled="true"</code> automatically.</div>
+              <div class="list-item">Focus indicators use <code>:focus-visible</code> to show a visible ring for keyboard navigation while suppressing it for pointer interaction.</div>
+              <div class="list-item">Projected text content serves as the accessible name. If only an icon is projected, add an <code>aria-label</code> attribute to the host element.</div>
+            </div>
+          </div>
+
+          <span class="code-label">Icon-only button with accessible label</span>
+          <div class="code-block">&lt;ff-button aria-label="Close dialog"&gt;
+  &lt;svg aria-hidden="true" width="16" height="16"&gt;
+    &lt;path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" /&gt;
+  &lt;/svg&gt;
+&lt;/ff-button&gt;</div>
+        </section>
+
+        <!-- Release model -->
+        <section id="release-model">
+          <h2 class="section-heading">Release and maintenance model</h2>
+          <p class="section-copy">
+            The wrapper is intended to ship as part of a centrally versioned platform. Product teams
+            should consume it as a package. Shadcn-style copy ownership may exist only as an escape
+            hatch for exceptional product requirements, not as the default path.
+          </p>
+          <div class="callout">
+            <h3>Recommended enterprise policy</h3>
+            <div class="list">
+              <div class="list-item">Default: consume the official wrapper package and official brand styles.</div>
+              <div class="list-item">Exception: copy ownership only with explicit ownership and upgrade responsibility.</div>
+              <div class="list-item">Never fork the official corporate brand pack as the default delivery model.</div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  
+<style>
+  .docs-release-shell {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid rgba(36, 25, 19, 0.16);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 14px 32px rgba(36, 25, 19, 0.12);
+    backdrop-filter: blur(12px);
+    font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  }
+  .docs-release-shell__badge {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9b4210;
+  }
+  .docs-release-shell__select {
+    border: 1px solid rgba(36, 25, 19, 0.14);
+    border-radius: 999px;
+    background: white;
+    padding: 0.35rem 0.65rem;
+    font: inherit;
+  }
+</style>
+<div class="docs-release-shell" aria-label="Documentation release selector">
+  <span class="docs-release-shell__badge">Latest v0.2.0</span>
+  <select class="docs-release-shell__select" onchange="if (this.value) window.location.href=this.value;">
+    <option value="/fuggetlenfe-angular-wrapper/latest/" selected>v0.2.0</option>
+  </select>
+</div>
+</body>
+</html>
