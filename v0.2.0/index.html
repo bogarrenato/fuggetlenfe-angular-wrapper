@@ -450,6 +450,11 @@
             <strong>npm distribution</strong>
             <span>Install the published wrapper from npm and compose it with tokens and official brand packs in Angular.</span>
           </a>
+          <a class="link-card" href="https://github.com/bogarrenato/fuggetlenfe-angular-wrapper">
+            <p class="eyebrow">Repository</p>
+            <strong>Polyrepo source</strong>
+            <span>See the Angular wrapper repo, then jump to the tokens, components, and React sibling repositories.</span>
+          </a>
         </section>
 
         <section class="stats-grid" aria-label="Wrapper facts">
@@ -465,8 +470,8 @@
           </article>
           <article class="panel">
             <p class="eyebrow">Design model</p>
-            <span class="stat-value">External token contract</span>
-            <p class="stat-copy">Angular apps import the CSS contract and a brand pack at the shell level.</p>
+            <span class="stat-value">Semantic-first contract</span>
+            <p class="stat-copy">Angular apps import the CSS contract and a brand pack at the shell level, while the wrapper stays thin.</p>
           </article>
         </section>
 
@@ -851,9 +856,9 @@ export class ShellComponent {
         <section id="token-architecture">
           <h2 class="section-heading">Token architecture</h2>
           <p class="section-copy">
-            The design system uses a three-layer token model that separates the design source of
-            truth (Figma) from the runtime contract consumed by components. Understanding this
-            pipeline is essential for teams who maintain brand packs or create custom themes.
+            The design system uses a three-layer token model that separates semantic meaning,
+            runtime contract, and brand implementation. Understanding this pipeline is essential
+            for teams who maintain brand packs or create custom themes.
           </p>
 
           <div class="callout">
@@ -861,8 +866,8 @@ export class ShellComponent {
             <div class="list">
               <div class="list-item">
                 <strong>Layer 1 &mdash; contract.css</strong><br />
-                Declares every CSS custom property the component layer can reference. This file
-                contains no values, only empty variable declarations. It acts as the schema.
+                Declares semantic colors, shared control tokens, and component aliases. This file
+                is the stable public schema between design and code.
               </div>
               <div class="list-item">
                 <strong>Layer 2 &mdash; figma-preset.css</strong><br />
@@ -881,8 +886,8 @@ export class ShellComponent {
           <div class="diagram-block"><span class="dim">Source</span>        <span class="dim">Sync</span>             <span class="dim">Contract</span>          <span class="dim">Brand</span>           <span class="dim">Component</span>
 
 <span class="hl">Figma</span>    ──&gt;   <span class="hl">figma-sync</span>   ──&gt;   <span class="hl">contract.css</span>   ──&gt;   <span class="hl">brand pack</span>   ──&gt;   <span class="hl">ff-button</span>
-<span class="dim">variables</span>      <span class="dim">CLI tool</span>          <span class="dim">empty decls</span>        <span class="dim">values by</span>        <span class="dim">reads vars</span>
-<span class="dim">& styles</span>       <span class="dim">extracts</span>          <span class="dim">define the</span>        <span class="dim">brand+theme</span>       <span class="dim">at runtime</span>
+<span class="dim">variables</span>      <span class="dim">CLI tool</span>          <span class="dim">semantic +</span>         <span class="dim">values by</span>        <span class="dim">reads vars</span>
+<span class="dim">& styles</span>       <span class="dim">extracts</span>          <span class="dim">control schema</span>     <span class="dim">brand+theme</span>       <span class="dim">at runtime</span>
                <span class="dim">tokens</span>            <span class="dim">public API</span>        <span class="dim">selector</span></div>
 
           <span class="code-label">How data-brand and data-theme activate tokens</span>
