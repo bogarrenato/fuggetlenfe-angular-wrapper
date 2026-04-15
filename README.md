@@ -24,6 +24,10 @@ It does not own:
 - Concrete brand values live in `@fuggetlenfe/brand-styles`.
 - The Stencil core remains the single behavioral source of truth.
 
+## Exported surface
+
+Exports mirror the primitives marked `shipping: ["angular-wrapper", ...]` in `fuggetlenfe-tokens/src/figma-source-manifest.json`. Today: `FfButton` (plus the `DIRECTIVES` convenience array). `FfInput` is registered as a roadmap primitive in the manifest and will ship once the underlying `ff-input` Stencil primitive lands in `@fuggetlenfe/components`. Adding exports outside of the manifest is a governance violation under the Source Alignment Gate.
+
 ## Local commands
 
 ```bash
