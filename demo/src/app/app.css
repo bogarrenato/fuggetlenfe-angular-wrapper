@@ -111,6 +111,10 @@
   padding: 1.2rem;
 }
 
+.repo-grid {
+  margin-top: 1rem;
+}
+
 .detail-block {
   display: grid;
   gap: 0.45rem;
@@ -123,6 +127,22 @@
 
 .detail-line--gap {
   margin-top: 0.5rem;
+}
+
+.repo-link {
+  display: grid;
+  gap: 0.2rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.repo-link strong {
+  font-size: 0.95rem;
+}
+
+.repo-link span {
+  color: var(--ff-color-text-muted);
+  font-size: 0.85rem;
 }
 
 .proof-list {

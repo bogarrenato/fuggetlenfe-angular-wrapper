@@ -15,6 +15,14 @@ It does not own:
 - Stencil component logic
 - tokens or brand packs
 - React integrations
+- the token sync or official brand pack generation
+
+## Best-practice boundary
+
+- This package bridges Angular template ergonomics only.
+- Semantic tokens, control tokens, and component aliases live in `@fuggetlenfe/tokens`.
+- Concrete brand values live in `@fuggetlenfe/brand-styles`.
+- The Stencil core remains the single behavioral source of truth.
 
 ## Local commands
 
