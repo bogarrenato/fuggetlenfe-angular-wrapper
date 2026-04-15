@@ -1,0 +1,126 @@
+name: Deploy consumer Angular app
+
+# Deploys the demo/ Angular 21 SPA — the "real" Angular consumer app that
+# installs @fuggetlenfe/angular-wrapper and proves the end-to-end contract
+# works in an Angular standalone application.
+#
+# The app is deployed to GitHub Pages at:
+#   https://<owner>.github.io/fuggetlenfe-angular-wrapper/app/
+#
+# We co-exist with the versioned docs at /latest/ and /v*/ by using
+# keep_files: true and a dedicated destination_dir on the gh-pages branch.
+#
+# Because no @fuggetlenfe/* packages are on npm yet, every dependency is
+# bootstrapped from GitHub source and packed locally — identical in spirit
+# to the fallback path in ci.yml, just extended to also include the
+# already-built wrapper itself and the brand-styles workspace that the
+# demo imports for its CSS contract.
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout wrapper
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Bootstrap tokens, brand-styles, components tarballs
+        id: bootstrap
+        run: |
+          set -euo pipefail
+          bootstrap_dir="$(mktemp -d)"
+          echo "dir=$bootstrap_dir" >> "$GITHUB_OUTPUT"
+
+          git clone --depth 1 https://github.com/bogarrenato/fuggetlenfe-tokens.git "$bootstrap_dir/tokens"
+          git clone --depth 1 https://github.com/bogarrenato/fuggetlenfe-components.git "$bootstrap_dir/components"
+
+          # Tokens workspace (provides @fuggetlenfe/tokens AND @fuggetlenfe/brand-styles)
+          (
+            cd "$bootstrap_dir/tokens"
+            npm install
+            tokens_tarball="$(npm pack | tail -n 1)"
+            echo "$bootstrap_dir/tokens/$tokens_tarball" > "$bootstrap_dir/tokens_tarball.path"
+            (
+              cd brand-styles
+              brand_tarball="$(npm pack | tail -n 1)"
+              echo "$bootstrap_dir/tokens/brand-styles/$brand_tarball" > "$bootstrap_dir/brand_tarball.path"
+            )
+          )
+
+          # Components (depends on tokens)
+          (
+            cd "$bootstrap_dir/components"
+            npm pkg set devDependencies.@fuggetlenfe/tokens="file:$(cat "$bootstrap_dir/tokens_tarball.path")"
+            npm install
+            npm run build
+            components_tarball="$(npm pack | tail -n 1)"
+            echo "$bootstrap_dir/components/$components_tarball" > "$bootstrap_dir/components_tarball.path"
+          )
+
+          echo "tokens=$(cat "$bootstrap_dir/tokens_tarball.path")" >> "$GITHUB_OUTPUT"
+          echo "brand=$(cat "$bootstrap_dir/brand_tarball.path")" >> "$GITHUB_OUTPUT"
+          echo "components=$(cat "$bootstrap_dir/components_tarball.path")" >> "$GITHUB_OUTPUT"
+
+      - name: Install, build and pack the Angular wrapper
+        id: wrapper
+        run: |
+          set -euo pipefail
+          npm pkg set dependencies.@fuggetlenfe/components="file:${{ steps.bootstrap.outputs.components }}"
+          npm install
+          npm run build
+          wrapper_tarball="$(npm pack | tail -n 1)"
+          echo "tarball=$GITHUB_WORKSPACE/$wrapper_tarball" >> "$GITHUB_OUTPUT"
+
+      - name: Install demo with local tarballs
+        working-directory: demo
+        run: |
+          set -euo pipefail
+          npm pkg set dependencies.@fuggetlenfe/tokens="file:${{ steps.bootstrap.outputs.tokens }}"
+          npm pkg set dependencies.@fuggetlenfe/brand-styles="file:${{ steps.bootstrap.outputs.brand }}"
+          npm pkg set dependencies.@fuggetlenfe/angular-wrapper="file:${{ steps.wrapper.outputs.tarball }}"
+          npm install
+
+      - name: Build demo SPA with Pages base href
+        working-directory: demo
+        run: npx ng build --base-href=/${{ github.event.repository.name }}/app/ --configuration=production
+
+      - name: Locate Angular browser output
+        id: artifact
+        working-directory: demo
+        run: |
+          set -euo pipefail
+          # @angular/build:application writes to dist/<project>/browser by default.
+          browser_dir="$(find dist -type d -name browser | head -n 1)"
+          if [ -z "$browser_dir" ]; then
+            echo "Could not locate Angular browser output" >&2
+            ls -R dist >&2
+            exit 1
+          fi
+          echo "dir=$(pwd)/$browser_dir" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy demo to gh-pages /app/
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ${{ steps.artifact.outputs.dir }}
+          destination_dir: app
+          keep_files: true
+          commit_message: "pages-app: deploy demo consumer app to /app/"
