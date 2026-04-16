@@ -1,12 +1,12 @@
-/* tslint:disable */
 /* auto-generated angular directive proxies */
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, NgZone } from '@angular/core';
 
-import { ProxyCmp, proxyOutputs } from './angular-component-lib/utils';
+import { ProxyCmp, proxyOutputs, type WebComponentElement } from './angular-component-lib/utils';
 
 import type { Components } from '@fuggetlenfe/components/components';
 
 import { defineCustomElement as defineFfButton } from '@fuggetlenfe/components/components/ff-button.js';
+
 @ProxyCmp({
   defineCustomElementFn: defineFfButton,
   inputs: ['disabled', 'ffAriaLabel', 'fullWidth', 'label', 'type', 'variant'],
@@ -16,27 +16,26 @@ import { defineCustomElement as defineFfButton } from '@fuggetlenfe/components/c
   selector: 'ff-button',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: '<ng-content></ng-content>',
-  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['disabled', 'ffAriaLabel', 'fullWidth', 'label', 'type', 'variant'],
   standalone: true
 })
 export class FfButton {
-  protected el: HTMLFfButtonElement;
-  constructor(c: ChangeDetectorRef, r: ElementRef, protected z: NgZone) {
+  el: WebComponentElement;
+  z: NgZone;
+  [key: string]: unknown;
+  constructor(c: ChangeDetectorRef, r: ElementRef<WebComponentElement>, z: NgZone) {
+    this.z = z;
     c.detach();
     this.el = r.nativeElement;
     proxyOutputs(this, this.el, ['ffClick']);
   }
 }
 
-
 export declare interface FfButton extends Components.FfButton {
   /**
    * Fired on click. Exposed as a dedicated event so consumers in every framework
-(React, Angular, Vue, plain HTML) can subscribe through the generated wrapper
-without worrying about DOM event bubbling semantics.
+   * (React, Angular, Vue, plain HTML) can subscribe through the generated wrapper
+   * without worrying about DOM event bubbling semantics.
    */
   ffClick: EventEmitter<CustomEvent<MouseEvent>>;
 }
-
-
